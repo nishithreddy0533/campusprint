@@ -12,14 +12,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
-// CORS — allow frontend origin
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
-app.use(
-  cors({
-    origin: allowedOrigin === '*' ? true : allowedOrigin,
-    credentials: true,
-  })
-);
+// CORS — allow all origins (frontend URL set per environment)
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
