@@ -7,6 +7,7 @@ import {
   getAllOrders,
   confirmPayment,
   updateOrderStatus,
+  overridePriceWithRuleBased,
 } from '../services/orderService.js';
 
 const router = Router();
@@ -89,6 +90,18 @@ router.patch('/:orderId/status', requireAuth, async (req, res, next) => {
   } catch (err) {
     if (err.status === 400) return res.status(400).json({ message: err.message });
     if (err.status === 404) return res.status(404).json({ message: err.message });
+    next(err);
+  }
+});
+
+// POST /api/orders/:orderId/override-price — override ML price with rule-based cost (staff only)
+router.post('/:orderId/override-price', requireAuth, async (req, res, next) => {
+  try {
+    const order = await overridePriceWithRuleBased(req.params.orderId);
+    return res.status(200).json({ order });
+  } catch (err) {
+    if (err.status === 404) return res.status(404).json({ message: err.message });
+    if (err.status === 400) return res.status(400).json({ message: err.message });
     next(err);
   }
 });

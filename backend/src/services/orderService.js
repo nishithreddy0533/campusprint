@@ -107,6 +107,38 @@ export async function confirmPayment(orderId) {
   return { ...order, paymentStatus: 'paid', updatedAt: now };
 }
 
+/**
+ * Overrides the ML-predicted price with the rule-based cost for an order.
+ * Only allowed when orderStatus === 'received'.
+ *
+ * @param {string} orderId
+ * @returns {object} Updated order
+ */
+export async function overridePriceWithRuleBased(orderId) {
+  const order = await getOrderById(orderId);
+  if (!order) {
+    const err = new Error('Order not found.');
+    err.status = 404;
+    throw err;
+  }
+  if (order.orderStatus !== 'received') {
+    const err = new Error(`Price override is only allowed when order status is "received". Current status: "${order.orderStatus}".`);
+    err.status = 400;
+    throw err;
+  }
+
+  const ruleBasedCost = calculateCost(order.printType, order.pages, order.copies, order.binding);
+  const now = new Date().toISOString();
+
+  const { error } = await getSupabaseClient()
+    .from(TABLE)
+    .update({ cost: ruleBasedCost, mlOverride: true, overrideAt: now, updatedAt: now })
+    .eq('orderId', orderId);
+  if (error) throw new Error(error.message);
+
+  return { ...order, cost: ruleBasedCost, mlOverride: true, overrideAt: now, updatedAt: now };
+}
+
 export async function updateOrderStatus(orderId, newStatus, extra = {}) {
   const order = await getOrderById(orderId);
   if (!order) {

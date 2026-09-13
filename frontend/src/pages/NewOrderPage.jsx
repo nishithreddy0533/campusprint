@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import PricePreview from '../components/PricePreview';
 
 const STEPS = ['Upload', 'Specs', 'Cost', 'Payment'];
 
@@ -286,6 +287,14 @@ export default function NewOrderPage() {
               placeholder="e.g., double-sided, A3 size…"
             />
           </Field>
+
+          <PricePreview
+            pages={Number(form.pages)}
+            copies={Number(form.copies)}
+            printType={form.printType}
+            binding={form.binding}
+          />
+
           <button onClick={handleCreateOrder} disabled={loading} className="btn-primary w-full py-3">
             {loading ? 'Processing…' : 'Get Cost Estimate →'}
           </button>

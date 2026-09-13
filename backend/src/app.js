@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import uploadRouter from './routes/upload.js';
 import ordersRouter from './routes/orders.js';
 import authRouter from './routes/auth.js';
+import mlRouter, { loadModelFromDisk } from './routes/mlRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -28,6 +29,10 @@ app.use('/uploads', express.static(uploadDir));
 app.use('/api/upload', uploadRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/ml', mlRouter);
+
+// Load ML model artifact from disk (non-blocking — failure is graceful)
+loadModelFromDisk();
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
