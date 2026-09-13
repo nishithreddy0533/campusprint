@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PricePreview from '../components/PricePreview';
@@ -118,21 +118,21 @@ export default function NewOrderPage() {
     <div className="max-w-lg mx-auto page-enter">
       {/* Page title */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-900">New Print Order</h1>
-        <p className="text-sm text-gray-400 mt-1">Upload your document and customise your print</p>
+        <h1 className="text-2xl font-extrabold text-gray-900">New Print Order</h1>
+        <p className="text-sm text-gray-400 mt-1">Upload your document and configure your print</p>
       </div>
 
       {/* Step indicator */}
       <div className="flex items-center mb-8">
         {STEPS.map((s, i) => (
-          <React.Fragment key={s}>
+          <span key={s} className="contents">
             <div className="flex flex-col items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 ${
                   i < step
-                    ? 'bg-indigo-600 border-indigo-600 text-white'
+                    ? 'bg-gradient-to-br from-indigo-600 to-violet-600 border-transparent text-white shadow-md shadow-indigo-200'
                     : i === step
-                    ? 'bg-white border-indigo-600 text-indigo-600 shadow-md shadow-indigo-100'
+                    ? 'bg-white border-indigo-500 text-indigo-600 step-dot-active'
                     : 'bg-white border-gray-200 text-gray-300'
                 }`}
               >
@@ -140,18 +140,16 @@ export default function NewOrderPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                ) : (
-                  i + 1
-                )}
+                ) : i + 1}
               </div>
-              <span className={`text-xs mt-1 font-medium ${i === step ? 'text-indigo-600' : i < step ? 'text-indigo-400' : 'text-gray-300'}`}>
+              <span className={`text-xs mt-1.5 font-medium ${i === step ? 'text-indigo-600' : i < step ? 'text-indigo-400' : 'text-gray-300'}`}>
                 {s}
               </span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`flex-1 h-0.5 mx-1 mb-5 transition-all duration-300 ${i < step ? 'bg-indigo-500' : 'bg-gray-200'}`} />
+              <div className={`flex-1 h-0.5 mx-1 mb-5 rounded-full transition-all duration-500 ${i < step ? 'bg-gradient-to-r from-indigo-500 to-violet-500' : 'bg-gray-200'}`} />
             )}
-          </React.Fragment>
+          </span>
         ))}
       </div>
 
@@ -327,25 +325,28 @@ export default function NewOrderPage() {
 
       {/* ── Step 3: Confirmation ── */}
       {step === 3 && order && (
-        <div className="card text-center space-y-6">
-          <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+        <div className="card text-center space-y-6 animate-scale-in">
+          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-200">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Payment Confirmed!</h2>
-            <p className="text-gray-500 text-sm mt-1">Your order is placed. Keep your token to track progress.</p>
+            <h2 className="text-2xl font-extrabold text-gray-900">Payment Confirmed!</h2>
+            <p className="text-gray-400 text-sm mt-1.5">Your order is placed. Use your token to track progress.</p>
           </div>
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-            <p className="text-xs text-indigo-400 mb-1 font-medium uppercase tracking-wide">Your Order Token</p>
+          <div
+            className="rounded-2xl p-4 text-left"
+            style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%)', border: '1px solid #c7d2fe' }}
+          >
+            <p className="text-xs text-indigo-400 mb-2 font-bold uppercase tracking-widest">Your Order Token</p>
             <p className="font-mono text-indigo-800 font-bold break-all text-sm">{order.orderId}</p>
           </div>
           <div className="flex gap-3">
-            <button onClick={() => navigate(`/order/${order.orderId}`)} className="btn-primary flex-1 py-2.5">
+            <button onClick={() => navigate(`/order/${order.orderId}`)} className="btn-primary flex-1 py-3">
               Track Order
             </button>
-            <button onClick={() => navigate('/')} className="btn-secondary flex-1 py-2.5">
+            <button onClick={() => navigate('/')} className="btn-secondary flex-1 py-3">
               Home
             </button>
           </div>
